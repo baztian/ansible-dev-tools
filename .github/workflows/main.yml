@@ -11,10 +11,12 @@ jobs:
       uses: ansible/ansible-lint-action@master
       with:
         targets: "."
+    - name: Install required roles
+      run: ansible-galaxy install -r requirements.yml
     - name: Install role and it's dependencies
       run: ansible-galaxy install git+file://${PWD}
     - name: Execute ansible playbook
-      run: ansible-playbook  tests/test.yml -i tests/inventory
+      run: ansible-playbook tests/test.yml -i tests/inventory
   release:
     needs:
       - test

@@ -11,5 +11,4 @@ galaxy_info:
   galaxy_tags:
     - development
     - dev
-dependencies:
-  - baztian.pip_venv
+dependencies: []
