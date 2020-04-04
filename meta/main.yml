@@ -1,0 +1,15 @@
+galaxy_info:
+  author: baztian
+  role_name: dev_tools
+  description: Role for installing various tools related to development tasks
+  license: MIT
+  min_ansible_version: 2.0
+  platforms:
+  - name: Ubuntu
+    versions:
+    - xenial
+  galaxy_tags:
+    - development
+    - dev
+dependencies:
+  - baztian.pip_venv
