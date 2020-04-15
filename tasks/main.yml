@@ -22,7 +22,7 @@
   file:
     path: /usr/local/share/applications
     state: directory
-  tags: postman,insomnia
+  tags: postman
 - name: Install ansible
   include_role:
     name: baztian.pip_venv
