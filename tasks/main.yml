@@ -1,4 +1,17 @@
 ---
+- name: Add dotenv approach
+  blockinfile:
+    path: ~/.bashrc
+    marker: "# {mark} ANSIBLE MANAGED BLOCK dotenv"
+    block: |
+      # .env loading in the shell
+      # see https://stackoverflow.com/a/34093548/1960601
+      dotenv () {
+        set -a
+        [ -f .env ] && . .env
+        set +a
+      }
+  become: no
 - name: Install various dev packages
   apt:
     pkg: "{{ various_dev_apt_packages }}"
