@@ -75,7 +75,7 @@
         - ansible_lint
   vars:
       pkg: ansible-lint
-      version: {{ ansible_lint_version }}
+      version: "{{ ansible_lint_version }}"
   when: ansible_lint_dpkg_check.rc != 0
   tags: ansible_lint
 - name: Install yq
