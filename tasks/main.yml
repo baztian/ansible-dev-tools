@@ -58,6 +58,22 @@
   apt:
     pkg: ansible
   tags: ansible
+- name: Setup ansible python interpreter version
+  ini_file:
+    path: /etc/ansible/ansible.cfg
+    section: defaults
+    option: interpreter_python
+    value: /usr/bin/python3
+    mode: '0644'
+  tags: ansible
+- name: Setup ansible to use no_cows
+  ini_file:
+    path: /etc/ansible/ansible.cfg
+    section: defaults
+    option: nocows
+    value: "1"
+    mode: '0644'
+  tags: ansible
 - name: Check whether ansible-lint is available via package manager
   command: dpkg-query -l ansible-lint
   ignore_errors: yes
