@@ -37,28 +37,38 @@
     state: directory
     mode: 0775
   tags: postman
-- name: Install ansible
-  include_role:
-    name: baztian.pip_venv
-    apply:
-      tags:
-        - ansible
-  vars:
-      pkg: ansible
-      version: 2.8.5
-      bin:
-        - ansible
-        - ansible-config
-        - ansible-connection
-        - ansible-console
-        - ansible-doc
-        - ansible-galaxy
-        - ansible-inventory
-        - ansible-playbook
-        - ansible-pull
-        - ansible-vault
+- name: Add PPA Key for ansible
+  apt_key:
+    id: 6125E2A8C77F2818FB7BD15B93C4A3FD7BB9C367
+    keyserver: keyserver.ubuntu.com
   tags: ansible
-- name: Install ansible-lint
+- name: Extract distribution base name (works on linux mint as well)
+  command: grep -oP 'UBUNTU_CODENAME=\K.*' /etc/os-release
+  register: distro
+  changed_when: False
+- name: Add ansible PPA (deb)
+  apt_repository:
+    repo: deb http://ppa.launchpad.net/ansible/ansible/ubuntu {{ distro.stdout }} main
+  tags: ansible
+- name: Add ansible PPA (deb-src)
+  apt_repository:
+    repo: deb-src http://ppa.launchpad.net/ansible/ansible/ubuntu {{ distro.stdout }} main
+  tags: ansible
+- name: Install ansible packages
+  apt:
+    pkg: ansible
+  tags: ansible
+- name: Check whether ansible-lint is available via package manager
+  command: dpkg-query -l ansible-lint
+  ignore_errors: yes
+  register: ansible_lint_dpkg_check
+  changed_when: False
+- name: Install ansible-lint via package manager
+  apt:
+    pkg: ansible-lint
+  when: ansible_lint_dpkg_check.rc == 0
+  tags: ansible_lint
+- name: Install ansible-lint without package manager
   include_role:
     name: baztian.pip_venv
     apply:
@@ -66,7 +76,8 @@
         - ansible_lint
   vars:
       pkg: ansible-lint
-      version: 4.1.0
+      version: "{{ ansible_lint_version }}"
+  when: ansible_lint_dpkg_check.rc != 0
   tags: ansible_lint
 - name: Install yq
   include_role:
