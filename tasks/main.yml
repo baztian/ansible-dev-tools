@@ -62,6 +62,7 @@
   command: dpkg-query -l ansible-lint
   ignore_errors: yes
   register: ansible_lint_dpkg_check
+  changed_when: False
 - name: Install ansible-lint via package manager
   apt:
     pkg: ansible-lint
