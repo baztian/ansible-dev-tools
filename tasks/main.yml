@@ -46,13 +46,15 @@
   command: grep -oP 'UBUNTU_CODENAME=\K.*' /etc/os-release
   register: distro
   changed_when: False
-- name: Add ansible PPA (deb)
+- name: Add ansible PPA (deb) if available
   apt_repository:
     repo: deb http://ppa.launchpad.net/ansible/ansible/ubuntu {{ distro.stdout }} main
+  ignore_errors: yes
   tags: ansible
-- name: Add ansible PPA (deb-src)
+- name: Add ansible PPA (deb-src) if available
   apt_repository:
     repo: deb-src http://ppa.launchpad.net/ansible/ansible/ubuntu {{ distro.stdout }} main
+  ignore_errors: yes
   tags: ansible
 - name: Install ansible packages
   apt:
