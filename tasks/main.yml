@@ -206,20 +206,28 @@
     dest: /usr/local/share/applications/postman.desktop
     mode: 0664
   tags: postman
+- name: install ripgrep
+  apt:
+    pkg: ripgrep
 - name: Gather installed packages
   package_facts:
   tags: ripgrep
+- name: Determine whether ripgrep download required
+  set_fact:
+    ripgrep_download_required: "{{ ansible_facts.packages['ripgrep'][0]['version']|default(0)
+     is version (ripgrep_version, '<') }}"
 - name: Download ripgrep {{ ripgrep_version }}
   get_url:
     url: https://github.com/BurntSushi/ripgrep/releases/download/{{ ripgrep_version }}/ripgrep_{{ ripgrep_version }}_amd64.deb
     checksum: "sha1:{{ ripgrep_sha1 }}"
     dest: /tmp/ripgrep_{{ ripgrep_version }}_amd64.deb
   tags: ripgrep
-  when: ansible_facts.packages['ripgrep']|default('undefined') != ripgrep_version
+  when: ripgrep_download_required
 - name: Install ripgrep {{ ripgrep_version }}
   apt:
     deb: /tmp/ripgrep_{{ ripgrep_version }}_amd64.deb
   tags: ripgrep
+  when: ripgrep_download_required
 - name: Install bump2version aka bumpversion
   include_role:
     name: baztian.pip_venv
