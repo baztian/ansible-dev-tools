@@ -157,54 +157,10 @@
     dest: "/usr/local/bin/jid"
     state: link
   tags: jid
-- name: Check if Postman App already installed
-  stat:
-    path: /opt/Postman-{{ postman_version }}
-  register: postman_directory
-  tags: postman
-- name: Install packages required by Postman App
-  # https://learning.getpostman.com/docs/postman/launching_postman/installation_and_updates/#linux-installation
-  apt:
-    pkg:
-      - libgconf-2-4
-  tags: postman
-- name: Download Postman App
-  get_url:
-    url: https://dl.pstmn.io/download/version/{{ postman_version }}/linux64
-    checksum: "sha1:{{ postman_sha1 }}"
-    dest: /tmp/Postman-{{ postman_version }}.tar.gz
-  when: not postman_directory.stat.exists
-  tags: postman
-- name: Create Postman app directory
-  file:
-    path: /opt/Postman-{{ postman_version }}
-    state: directory
-    mode: 0775
-  tags: postman
-- name: Unarchive Postman App
-  unarchive:
-    src: /tmp/Postman-{{ postman_version }}.tar.gz
-    extra_opts:
-      - "--strip-components=1"
-    dest: /opt/Postman-{{ postman_version }}
-    remote_src: yes
-  when: not postman_directory.stat.exists
-  tags: postman
-- name: Symlink default Postman version
-  file:
-    src: "Postman-{{ postman_version }}"
-    dest: "/opt/Postman"
-    state: link
-  tags: postman
-- name: Copy Postman App desktop launcher
-  template:
-    src: templates/postman.desktop.j2
-    dest: /usr/local/share/applications/postman.desktop
-    mode: 0664
-  tags: postman
 - name: install ripgrep
   apt:
     pkg: ripgrep
+  tags: ripgrep
 - name: Gather installed packages
   package_facts:
   tags: ripgrep
@@ -212,6 +168,7 @@
   set_fact:
     ripgrep_download_required: "{{ ansible_facts.packages['ripgrep'][0]['version']|default(0)
      is version (ripgrep_version, '<') }}"
+  tags: ripgrep
 - name: Download ripgrep {{ ripgrep_version }}
   get_url:
     url: https://github.com/BurntSushi/ripgrep/releases/download/{{ ripgrep_version }}/ripgrep_{{ ripgrep_version }}_amd64.deb
