@@ -164,6 +164,7 @@
 - name: install ripgrep
   apt:
     pkg: ripgrep
+  tags: ripgrep
 - name: Gather installed packages
   package_facts:
   tags: ripgrep
@@ -171,6 +172,7 @@
   set_fact:
     ripgrep_download_required: "{{ ansible_facts.packages['ripgrep'][0]['version']|default(0)
      is version (ripgrep_version, '<') }}"
+  tags: ripgrep
 - name: Download ripgrep {{ ripgrep_version }}
   get_url:
     url: https://github.com/BurntSushi/ripgrep/releases/download/{{ ripgrep_version }}/ripgrep_{{ ripgrep_version }}_amd64.deb
