@@ -99,6 +99,21 @@
         pkg: ansible-lint
         version: "{{ ansible_lint_version }}"
     tags: ansible_lint
+- name: Install libssl-dev (molecule requirement)
+  apt:
+    pkg: libssl-dev
+  tags: molecule
+- name: Install molecule
+  include_role:
+    name: baztian.pip_venv
+    apply:
+      tags:
+        - molecule
+  vars:
+      pkg: molecule[ansible,docker,lint]
+      dir: molecule
+      version: "{{ molecule_version }}"
+  tags: molecule
 - name: Install yq
   include_role:
     name: baztian.pip_venv
