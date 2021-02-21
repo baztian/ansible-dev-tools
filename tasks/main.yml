@@ -82,27 +82,23 @@
     value: "1"
     mode: '0644'
   tags: ansible
-- name: Check whether ansible-lint is available via package manager
-  command: dpkg-query -l ansible-lint
-  ignore_errors: yes
-  register: ansible_lint_dpkg_check
-  changed_when: False
-- name: Install ansible-lint via package manager
-  apt:
-    pkg: ansible-lint
-  when: ansible_lint_dpkg_check.rc == 0
-  tags: ansible_lint
-- name: Install ansible-lint without package manager
-  include_role:
-    name: baztian.pip_venv
-    apply:
-      tags:
-        - ansible_lint
-  vars:
+- name: Install ansible-lint
+  block:
+  - name: Install ansible-lint via package manager
+    apt:
       pkg: ansible-lint
-      version: "{{ ansible_lint_version }}"
-  when: ansible_lint_dpkg_check.rc != 0
-  tags: ansible_lint
+    tags: ansible_lint
+  rescue:
+  - name: Install ansible-lint without package manager
+    include_role:
+      name: baztian.pip_venv
+      apply:
+        tags:
+          - ansible_lint
+    vars:
+        pkg: ansible-lint
+        version: "{{ ansible_lint_version }}"
+    tags: ansible_lint
 - name: Install yq
   include_role:
     name: baztian.pip_venv
