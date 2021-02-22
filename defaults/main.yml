@@ -3,7 +3,7 @@ various_dev_apt_packages:
   - jq
 ansible_lint_version: 4.2.0
 molecule_version: 3.2.3
-molecule_flavour: docker,lint
+molecule_flavour: "[docker,lint]"
 jid_version: 0.7.6
 jid_sha256: b5706cda44bc76c5db8a1e7956d25ef2e25bf618a7b03e1d98e8f4fc2e2f393a
 # See https://www.getpostman.com/downloads/release-notes#changelog-linux-app
