@@ -110,7 +110,7 @@
       tags:
         - molecule
   vars:
-      pkg: molecule[ansible,docker,lint]
+      pkg: molecule[{{ molecule_flavour }}]
       dir: molecule
       version: "{{ molecule_version }}"
   tags: molecule
