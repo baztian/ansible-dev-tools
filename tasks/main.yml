@@ -70,17 +70,18 @@
   ini_file:
     path: /etc/ansible/ansible.cfg
     section: defaults
-    option: interpreter_python
-    value: /usr/bin/python3
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
     mode: '0644'
-  tags: ansible
-- name: Setup ansible to use no_cows
-  ini_file:
-    path: /etc/ansible/ansible.cfg
-    section: defaults
-    option: nocows
-    value: "1"
-    mode: '0644'
+  with_items:
+    - option: interpreter_python
+      value: /usr/bin/python3
+    - option: nocows
+      value: "1"
+    - option: stdout_callback
+      value: yaml
+    - option: stderr_callback
+      value: yaml
   tags: ansible
 - name: Install ansible-lint
   block:
