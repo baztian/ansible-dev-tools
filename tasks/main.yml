@@ -18,6 +18,7 @@
   apt:
     pkg:
       - dirmngr
+      - apt-transport-https
 - name: Install various dev packages
   apt:
     pkg: "{{ various_dev_apt_packages }}"
@@ -49,7 +50,7 @@
     keyserver: keyserver.ubuntu.com
   tags: ansible
 - name: Extract distribution base name (works on linux mint as well)
-  command: grep -oP 'UBUNTU_CODENAME=\K.*' /etc/os-release
+  command: grep -oP '{{ "UBUNTU" if ansible_distribution == "Ubuntu" else "VERSION" }}_CODENAME=\K.*' /etc/os-release
   register: distro
   changed_when: False
 - name: Add ansible PPA (deb) if available
