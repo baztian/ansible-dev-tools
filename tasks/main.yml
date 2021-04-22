@@ -1,4 +1,15 @@
 ---
+- name: Include OS-specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+      - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+      - "{{ ansible_distribution }}.yml"
+      - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+      - "{{ ansible_os_family }}.yml"
+      - "default.yml"
+    - skip: true
+
 - name: Add dotenv approach
   blockinfile:
     path: ~/.bashrc
@@ -50,7 +61,7 @@
     keyserver: keyserver.ubuntu.com
   tags: ansible
 - name: Extract distribution base name (works on linux mint as well)
-  command: grep -oP '{{ "UBUNTU" if ansible_distribution == "Ubuntu" else "VERSION" }}_CODENAME=\K.*' /etc/os-release
+  command: grep -oP '{{ "VERSION" if ansible_distribution == "Debian" else "UBUNTU" }}_CODENAME=\K.*' /etc/os-release
   register: distro
   changed_when: False
 - name: Add ansible PPA (deb) if available
