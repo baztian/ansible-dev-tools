@@ -126,7 +126,7 @@
   vars:
       pkg: molecule{{ molecule_flavour }}
       dir: molecule
-      version: "{{ molecule_effective_version }}"
+      version: "{{ molecule_version }}"
   tags: molecule
 - name: Install yq
   include_role:

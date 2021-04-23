@@ -1,2 +1,0 @@
----
-molecule_effective_version: "{{ molecule_version }}"
