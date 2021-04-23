@@ -30,6 +30,7 @@
     pkg:
       - dirmngr
       - apt-transport-https
+      - unzip
 - name: Install various dev packages
   apt:
     pkg: "{{ various_dev_apt_packages }}"
