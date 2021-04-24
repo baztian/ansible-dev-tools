@@ -219,3 +219,6 @@
       version: "{{ bump2version_version }}"
       bin: bumpversion
   tags: bump2version
+- name: Install adr-tools
+  include_role:
+    name: baztian.adr_tools
