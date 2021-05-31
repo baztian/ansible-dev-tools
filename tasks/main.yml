@@ -42,7 +42,7 @@
   tags: insomnia
 - name: Add apt repo for Insomnia
   apt_repository:
-    repo: "deb https://dl.bintray.com/getinsomnia/Insomnia /"
+    repo: "deb [trusted=yes arch=amd64] https://download.konghq.com/insomnia-ubuntu/ default all"
     state: present
   tags: insomnia
 - name: Install Insomnia
