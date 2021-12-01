@@ -106,11 +106,12 @@
         pkg: ansible-lint
         version: "{{ ansible_lint_version }}"
     tags: ansible_lint
-- name: Install ansibleansible-play-role-local script
-  copy:
-    src: ansible-play-role-local
+- name: Install ansible-play-role-local script
+  get_url:
+    url: '{{ ansible_play_role_local_url }}'
     dest: /usr/local/bin/ansible-play-role-local
-    mode: "755"
+    mode: 0755
+    force: yes
 - name: Install libssl-dev (molecule requirement)
   apt:
     pkg: libssl-dev
