@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+    echo "Usage $(basename $0) ROLENAME [additional ansible-playbook options]" > /dev/stderr
+    exit 1
+fi
+
+ROLE=$1
+shift
+TMPFILE="$(mktemp -t playbook-XXXXXX.yml)"
+cat > $TMPFILE <<HERE
+---
+- hosts: all
+  roles:
+    - role: $ROLE
+HERE
+
+ansible-playbook "$TMPFILE" -c local -i localhost, "$@"
