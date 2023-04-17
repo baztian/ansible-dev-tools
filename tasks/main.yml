@@ -187,6 +187,16 @@
     dest: "/usr/local/bin/jid"
     state: link
   tags: jid
+- name: Install json2html
+  include_role:
+    name: baztian.pip_venv
+    apply:
+      tags:
+        - json2html
+  vars:
+      pkg: git+https://github.com/baztian/json2html.git@command-line
+      dir: json2html
+  tags: json2html
 - name: install ripgrep
   block:
   - name: install ripgrep via pkg manager
