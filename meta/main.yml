@@ -3,15 +3,15 @@ galaxy_info:
   role_name: dev_tools
   description: Role for installing various tools related to development tasks
   license: MIT
-  min_ansible_version: 2.0
+  min_ansible_version: '2.0'
   platforms:
   - name: Ubuntu
     versions:
-    - bionic
+    - jammy
     - focal
   - name: Debian
     versions:
-    - buster
+    - bullseye
   galaxy_tags:
     - development
     - dev
