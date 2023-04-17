@@ -148,8 +148,8 @@
       tags:
         - jpterm
   vars:
-      pkg: jmespath-terminal
-      version: 0.2.1
+      pkg: git+https://github.com/chadselph/jmespath.terminal.git@bump-urwid
+      version: latest
       bin: jpterm
   tags: jpterm
 - name: Check if jid already installed
