@@ -13,7 +13,9 @@
       }
   become: no
 - name: Update apt cache.
-  apt: update_cache=yes cache_valid_time=3600
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
 - name: Install dirmngr in order to be able to install the apt signing key
   apt:
     pkg:
