@@ -198,6 +198,7 @@
         - json2html
   vars:
       pkg: git+https://github.com/baztian/json2html.git@command-line
+      version: latest
       dir: json2html
   tags: json2html
 - name: Install ripgrep
