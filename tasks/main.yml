@@ -190,6 +190,11 @@
     dest: "/usr/local/bin/jid"
     state: link
   tags: jid
+- name: Install git in order to be able to install also json2html from git branch
+  apt:
+    pkg:
+      - git
+  tags: json2html
 - name: Install json2html
   include_role:
     name: baztian.pip_venv
