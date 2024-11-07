@@ -28,13 +28,14 @@
   tags: various_dev_apt_packages
 - name: Add Insomnia signing key on remote server to keyring
   apt_key:
-    url: https://insomnia.rest/keys/debian-public.key.asc
-    id: 8756C4F765C9AC3CB6B85D62379CE192D401AB61
+    url: https://packages.konghq.com/public/insomnia/gpg.474B9148D779222B.key
+    id: D3E4DF603171E1379891C119474B9148D779222B
+    keyring: /etc/apt/trusted.gpg.d/kong-insomnia-archive-keyring.gpg
     state: present
   tags: insomnia
 - name: Add apt repo for Insomnia
   apt_repository:
-    repo: "deb [trusted=yes arch=amd64] https://download.konghq.com/insomnia-ubuntu/ default all"
+    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/kong-insomnia-archive-keyring.gpg] https://packages.konghq.com/public/insomnia/deb/ubuntu focal main"
     state: present
   tags: insomnia
 - name: Install Insomnia
