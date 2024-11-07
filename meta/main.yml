@@ -7,11 +7,10 @@ galaxy_info:
   platforms:
   - name: Ubuntu
     versions:
-    - jammy
-    - focal
+    - noble
   - name: Debian
     versions:
-    - bullseye
+    - bookworm
   galaxy_tags:
     - development
     - dev
