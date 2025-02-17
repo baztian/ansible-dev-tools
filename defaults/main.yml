@@ -1,6 +1,7 @@
 ---
 various_dev_apt_packages:
   - jq
+  - adr-tools
 ansible_lint_version: 4.2.0
 molecule_version: 25.2.0
 molecule_docker_version: 2.1.0
