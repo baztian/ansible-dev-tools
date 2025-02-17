@@ -87,6 +87,29 @@
         pkg: ansible-lint
         version: "{{ ansible_lint_version }}"
     tags: ansible_lint
+- name: Add ansible_play_current_role function to ~/.bashrc
+  blockinfile:
+    path: ~/.bashrc
+    block: |
+      function ansible_play_current_role() {
+        playbook_content="- hosts: localhost
+        gather_facts: yes
+        tasks:
+        - include_role:
+            name: $PWD"
+
+        echo "Do you want to execute the following Ansible playbook?"
+        echo "$playbook_content"
+        read -p "Press Enter to proceed or Ctrl-C to abort." confirmation
+
+        if [[ -z "$confirmation" ]]; then
+            ansible-playbook <(echo "$playbook_content") -K -b
+        else
+            echo "Operation cancelled."
+        fi
+      }
+    marker: "# {mark} ANSIBLE MANAGED BLOCK ansible_play_current_role function"
+  become: no
 - name: Install ansible-play-role-local script
   get_url:
     url: '{{ ansible_play_role_local_url }}'
