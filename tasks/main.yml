@@ -245,3 +245,30 @@
       version: "{{ bump2version_version }}"
       bin: bumpversion
   tags: bump2version
+- name: Install apm Agent Package Manager
+  include_role:
+    name: baztian.pip_venv
+    apply:
+      tags:
+        - apm
+  vars:
+      pkg: apm-cli
+      version: "{{ apm_version }}"
+      bin: apm
+  tags: apm
+- name: Add Atlassian CLI signing key on remote server to keyring
+  apt_key:
+    url: https://acli.atlassian.com/gpg/public-key.asc
+    keyring: /etc/apt/trusted.gpg.d/atlassian-keyring.gpg
+    state: present
+  tags: acli
+- name: Add apt repo for Atlassian CLI
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/atlassian-keyring.gpg] https://acli.atlassian.com/linux/deb stable main"
+    state: present
+    update_cache: yes
+  tags: acli
+- name: Install acli Atlassian CLI
+  apt:
+    pkg: acli
+  tags: acli
