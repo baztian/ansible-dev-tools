@@ -245,3 +245,14 @@
       version: "{{ bump2version_version }}"
       bin: bumpversion
   tags: bump2version
+- name: Install apm Agent Package Manager
+  include_role:
+    name: baztian.pip_venv
+    apply:
+      tags:
+        - apm
+  vars:
+      pkg: apm-cli
+      version: "{{ apm_version }}"
+      bin: apm
+  tags: apm

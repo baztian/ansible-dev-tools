@@ -13,3 +13,4 @@ ripgrep_version: 11.0.2
 ripgrep_sha1: de1aa2176c242c5f60921286a47e58c09d2de64c
 bump2version_version: 1.0.0
 ansible_play_role_local_url: https://gist.githubusercontent.com/baztian/5a7b87ebc223fd6f6fe7cc4cbeb7156e/raw/ansible-play-role-local
+apm_version: 0.15.0
