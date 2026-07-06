@@ -26,6 +26,22 @@
   apt:
     pkg: "{{ various_dev_apt_packages }}"
   tags: various_dev_apt_packages
+- name: Add Bruno signing key on remote server to keyring
+  apt_key:
+    id: 9FA6017ECABE0266
+    keyserver: keyserver.ubuntu.com
+    keyring: /etc/apt/trusted.gpg.d/bruno.gpg
+    state: present
+  tags: bruno
+- name: Add apt repo for Bruno
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/bruno.gpg] http://debian.usebruno.com/ bruno stable"
+    state: present
+  tags: bruno
+- name: Install Bruno
+  apt:
+    pkg: bruno
+  tags: bruno
 - name: Add Insomnia signing key on remote server to keyring
   apt_key:
     url: https://packages.konghq.com/public/insomnia/gpg.474B9148D779222B.key
