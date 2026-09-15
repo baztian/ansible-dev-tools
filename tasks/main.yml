@@ -311,3 +311,8 @@
   changed_when: false
   become: no
   tags: rtk
+- name: Install Caveman small rock skill
+  command: npx skills add JuliusBrussee/caveman
+  changed_when: false
+  become: no
+  tags: caveman
