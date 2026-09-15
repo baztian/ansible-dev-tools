@@ -15,3 +15,5 @@ bump2version_version: 1.0.0
 ansible_play_role_local_url: https://gist.githubusercontent.com/baztian/5a7b87ebc223fd6f6fe7cc4cbeb7156e/raw/ansible-play-role-local
 apm_version: 0.30.0
 npm_config_prefix: /usr/local
+rtk_version: 0.49.0
+rtk_sha256: 813c6623c24c67bc511dffd5c5e2ef55892866a4cd491b7e8ad8e8d9e61196a1

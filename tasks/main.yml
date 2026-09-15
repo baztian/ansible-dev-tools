@@ -295,3 +295,19 @@
   environment:
     npm_config_prefix: "{{ npm_config_prefix }}"
   tags: opencode-ai
+- name: Download RTK {{ rtk_version }}
+  get_url:
+    url: "https://github.com/rtk-ai/rtk/releases/download/v{{ rtk_version }}/rtk_{{ rtk_version }}-1_amd64.deb"
+    checksum: "sha256:{{ rtk_sha256 }}"
+    dest: "/tmp/rtk_{{ rtk_version }}-1_amd64.deb"
+    mode: 0644
+  tags: rtk
+- name: Install RTK {{ rtk_version }}
+  apt:
+    deb: "/tmp/rtk_{{ rtk_version }}-1_amd64.deb"
+  tags: rtk
+- name: Initialize RTK for OpenCode
+  command: rtk init -g --opencode
+  changed_when: false
+  become: no
+  tags: rtk
