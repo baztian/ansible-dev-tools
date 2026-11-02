@@ -320,7 +320,7 @@
   become: no
   tags: rtk
 - name: Install Caveman small rock skill
-  command: npx skills add JuliusBrussee/caveman
+  command: npx -y github:JuliusBrussee/caveman -- --only opencode
   changed_when: false
   become: no
   tags: caveman
