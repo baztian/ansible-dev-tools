@@ -288,13 +288,21 @@
   apt:
     pkg: acli
   tags: acli
-- name: Install OpenCode AI
+- name: Make sure OpenCode AI 1.x is absent
   npm:
     name: opencode-ai
     global: yes
+    state: absent
   environment:
     npm_config_prefix: "{{ npm_config_prefix }}"
-  tags: opencode-ai
+  tags: opencode-cli
+- name: Install OpenCode CLI
+  npm:
+    name: '@opencode/cli'
+    global: yes
+  environment:
+    npm_config_prefix: "{{ npm_config_prefix }}"
+  tags: opencode-cli
 - name: Download RTK {{ rtk_version }}
   get_url:
     url: "https://github.com/rtk-ai/rtk/releases/download/v{{ rtk_version }}/rtk_{{ rtk_version }}-1_amd64.deb"
