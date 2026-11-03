@@ -16,47 +16,82 @@
   apt:
     update_cache: yes
     cache_valid_time: 3600
-- name: Install dirmngr in order to be able to install the apt signing key
+- name: Install development tool dependencies
   apt:
     pkg:
-      - dirmngr
       - apt-transport-https
       - unzip
 - name: Install various dev packages
   apt:
     pkg: "{{ various_dev_apt_packages }}"
   tags: various_dev_apt_packages
-- name: Add Bruno signing key on remote server to keyring
-  apt_key:
-    id: 9FA6017ECABE0266
-    keyserver: keyserver.ubuntu.com
-    keyring: /etc/apt/trusted.gpg.d/bruno.gpg
+- name: Install repository dependencies
+  ansible.builtin.apt:
+    pkg:
+      - ca-certificates
+      - python3-debian
     state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - bruno
+    - insomnia
+    - acli
+- name: Remove legacy Bruno repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/bruno.gpg] http://debian.usebruno.com/ bruno stable"
+    state: absent
+    update_cache: no
   tags: bruno
 - name: Add apt repo for Bruno
-  apt_repository:
-    repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/bruno.gpg] http://debian.usebruno.com/ bruno stable"
+  ansible.builtin.deb822_repository:
+    name: bruno
+    types:
+      - deb
+    uris:
+      - http://debian.usebruno.com/
+    suites:
+      - bruno
+    components:
+      - stable
+    architectures:
+      - amd64
+    signed_by: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x9FA6017ECABE0266"
     state: present
+  register: bruno_repository
   tags: bruno
 - name: Install Bruno
   apt:
     pkg: bruno
+    update_cache: yes
+    cache_valid_time: "{{ 0 if bruno_repository.changed else 3600 }}"
   tags: bruno
-- name: Add Insomnia signing key on remote server to keyring
-  apt_key:
-    url: https://packages.konghq.com/public/insomnia/gpg.474B9148D779222B.key
-    id: D3E4DF603171E1379891C119474B9148D779222B
-    keyring: /etc/apt/trusted.gpg.d/kong-insomnia-archive-keyring.gpg
-    state: present
+- name: Remove legacy Insomnia repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/kong-insomnia-archive-keyring.gpg] https://packages.konghq.com/public/insomnia/deb/ubuntu focal main"
+    state: absent
+    update_cache: no
   tags: insomnia
 - name: Add apt repo for Insomnia
-  apt_repository:
-    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/kong-insomnia-archive-keyring.gpg] https://packages.konghq.com/public/insomnia/deb/ubuntu focal main"
+  ansible.builtin.deb822_repository:
+    name: insomnia
+    types:
+      - deb
+    uris:
+      - https://packages.konghq.com/public/insomnia/deb/ubuntu
+    suites:
+      - focal
+    components:
+      - main
+    signed_by: https://packages.konghq.com/public/insomnia/gpg.474B9148D779222B.key
     state: present
+  register: insomnia_repository
   tags: insomnia
 - name: Install Insomnia
   apt:
     pkg: insomnia
+    update_cache: yes
+    cache_valid_time: "{{ 0 if insomnia_repository.changed else 3600 }}"
   tags: insomnia
 - name: Install ansible packages
   apt:
@@ -272,22 +307,40 @@
       version: "{{ apm_version }}"
       bin: apm
   tags: apm
-- name: Add Atlassian CLI signing key on remote server to keyring
-  apt_key:
-    url: https://acli.atlassian.com/gpg/public-key.asc
-    keyring: /etc/apt/trusted.gpg.d/atlassian-keyring.gpg
-    state: present
+- name: Remove legacy Atlassian CLI repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/atlassian-keyring.gpg] https://acli.atlassian.com/linux/deb stable main"
+    state: absent
+    update_cache: no
   tags: acli
 - name: Add apt repo for Atlassian CLI
-  apt_repository:
-    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/atlassian-keyring.gpg] https://acli.atlassian.com/linux/deb stable main"
+  ansible.builtin.deb822_repository:
+    name: acli
+    types:
+      - deb
+    uris:
+      - https://acli.atlassian.com/linux/deb
+    suites:
+      - stable
+    components:
+      - main
+    signed_by: https://acli.atlassian.com/gpg/public-key.asc
     state: present
-    update_cache: yes
+  register: acli_repository
   tags: acli
 - name: Install acli Atlassian CLI
   apt:
     pkg: acli
+    update_cache: yes
+    cache_valid_time: "{{ 0 if acli_repository.changed else 3600 }}"
   tags: acli
+- name: Make sure nodejs is installed
+  ansible.builtin.apt:
+    pkg: nodejs
+    state: present
+  tags:
+    - opencode-cli
+    - caveman
 - name: Make sure OpenCode AI 1.x is absent
   npm:
     name: opencode-ai
@@ -296,12 +349,22 @@
   environment:
     npm_config_prefix: "{{ npm_config_prefix }}"
   tags: opencode-cli
-- name: Install OpenCode CLI
-  npm:
-    name: '@opencode/cli'
-    global: yes
-  environment:
-    npm_config_prefix: "{{ npm_config_prefix }}"
+- name: Try to install OpenCode CLI
+  block:
+    - name: Install OpenCode CLI
+      npm:
+        name: '@opencode/cli'
+        global: yes
+      environment:
+        npm_config_prefix: "{{ npm_config_prefix }}"
+  rescue:
+    - name: Warn when OpenCode CLI installation fails
+      ansible.builtin.debug:
+        msg: >-
+          WARNING: OpenCode CLI installation failed; continuing without installing it.
+          Error: {{ ansible_failed_result.msg | default('Unknown installation error') }}
+          Hint: On x86, OpenCode requires SSE4.2 support. If this is a VM, try CPU
+                type host if the host supports SSE4.2, then fully stop and start the VM.
   tags: opencode-cli
 - name: Download RTK {{ rtk_version }}
   get_url:
