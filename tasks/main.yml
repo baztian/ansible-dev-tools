@@ -151,10 +151,13 @@
 
         echo "Do you want to execute the following Ansible playbook?"
         echo "$playbook_content"
+        if [ "$#" -gt 0 ]; then
+          echo "With extra arguments: $@"
+        fi
         read -p "Press Enter to proceed or Ctrl-C to abort." confirmation
 
         if [[ -z "$confirmation" ]]; then
-            ansible-playbook <(echo "$playbook_content") -K -b
+            ansible-playbook <(echo "$playbook_content") -K -b "$@"
         else
             echo "Operation cancelled."
         fi
